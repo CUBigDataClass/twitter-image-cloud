@@ -1,7 +1,7 @@
 const OAuth = require('oauth')
 const JSONStream = require('JSONStream')
 const through2 = require('through2')
-const { consumerKey, consumerSecret, accessToken, accessTokenSecret } = require('./data/twitter_config')
+const { consumerKey, consumerSecret, accessToken, accessTokenSecret } = require('./secret/twitter_config')
 const sampleURL = 'https://stream.twitter.com/1.1/statuses/sample.json'
 
 
