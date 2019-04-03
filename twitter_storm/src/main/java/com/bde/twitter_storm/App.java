@@ -31,8 +31,15 @@ public class App {
         builder.setSpout("twitter-spout",
                 new TwitterSpout(consumerKey, consumerSecret, accessToken, accessTokenSecret));
 
-                //bolt to strip tweet down to needed fields
-        builder.setBolt("twitter-hashtag-reader-bolt", new TweetStripBolt()).shuffleGrouping("twitter-spout");
+        //bolt to strip tweet down to needed fields
+        builder.setBolt("strip-filter-bolt", new TweetStripBolt()).shuffleGrouping("twitter-spout");
+        //bolt to make NLP api call
+        builder.setBolt("nlp-bolt", new NLPBolt()).shuffleGrouping("strip-filter-bolt");
+        //bolt to filter valid entities returned
+
+        //bolt to make wiki api call
+
+        //bolt to story entity and tweet in SQL db
 
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("TwitterHashtagStorm", config, builder.createTopology());

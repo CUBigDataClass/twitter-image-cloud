@@ -12,7 +12,7 @@ import org.apache.storm.tuple.Values;
 
 import twitter4j.Status;
 
-public class TweetStripBolt extends BaseRichBolt {
+public class NLPBolt extends BaseRichBolt {
     private OutputCollector collector;
 
     @Override
@@ -23,19 +23,13 @@ public class TweetStripBolt extends BaseRichBolt {
 
     @Override
     public void execute(Tuple input) {
-        Status tweet = (Status) input.getValueByField("tweet");
-        boolean isEn = tweet.getLang() == "en";
-        boolean isRT = tweet.isRetweet();
-        //filter out image only tweets?
-        if(isEn && !isRT) {
-            collector.emit(new Values(tweet.getCreatedAt(), tweet.getId(), tweet.getText()));
-        }
+
 
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("created_at", "id", "text"));
+        declarer.declare(new Fields());
     }
     
 }
