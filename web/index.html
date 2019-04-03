@@ -9,6 +9,9 @@
         <link href="css/style.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Lato|Poppins" rel="stylesheet">
         <script src="js/script.js" defer></script>
+        <script src= "https://cdn.zingchart.com/zingchart.min.js"></script>
+        <script src="js/zingchart-wordcloud.min.js" defer></script>
+        
     </head>
     <body>
         <div class="container">
@@ -20,15 +23,15 @@
             <nav class="red">
                 <ul>
                     <li>
-                        <a href="about.html">Team</a>
+                        <a href="team.html">Team</a>
                     </li>
                     <li>
-                        <a>About</a>
+                        <a href="about.html">About</a>
                     </li>
                 </ul>
             </nav>
             <main>
-    
+                <div id="myChart"><a class="zc-ref" href="https://www.zingchart.com">Powered by ZingChart</a></div>
                 <div class="slidecontainer">
                     <input type="range" min="0" max="30" value="0" class="slider" id="myRange">
                 <p><span id="sValue"></span> day(s) ago</p>

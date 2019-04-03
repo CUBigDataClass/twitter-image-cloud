@@ -87,6 +87,9 @@ h3 {
 p {
     font-family: 'Lato', sans-serif;
 }
+.centerText {
+    text-align: center;
+}
 
 /*Slider bar*/
 .slider {
@@ -192,5 +195,16 @@ img {
     .image-container {
         grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
     }
+}
+
+#myChart {
+	height:100%;
+	width:100%;
+	min-height:100px;
+    padding-bottom: 1em;
+    font-family: 'Roboto', sans-serif;
+}
+.zc-ref {
+	display: none;
 }
 
