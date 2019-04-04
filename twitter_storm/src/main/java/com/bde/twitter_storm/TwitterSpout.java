@@ -3,11 +3,11 @@ package com.bde.twitter_storm;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import twitter4j.FilterQuery;
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
+import twitter4j.StreamListener;
 
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
@@ -29,7 +29,7 @@ import org.apache.storm.utils.Utils;
 public class TwitterSpout extends BaseRichSpout {
     SpoutOutputCollector _collector;
     LinkedBlockingQueue<Status> queue = null;
-    TwitterStream _twitterStream;
+    TwitterStream twitterStream;
 
     String consumerKey;
     String consumerSecret;
@@ -42,10 +42,6 @@ public class TwitterSpout extends BaseRichSpout {
         this.consumerSecret = consumerSecret;
         this.accessToken = accessToken;
         this.accessTokenSecret = accessTokenSecret;
-    }
-
-    public TwitterSpout() {
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -89,11 +85,13 @@ public class TwitterSpout extends BaseRichSpout {
                 .setOAuthAccessToken(accessToken)
                 .setOAuthAccessTokenSecret(accessTokenSecret);
 
-        _twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
-        _twitterStream.addListener(listener);
+        twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
+        twitterStream.addListener(listener);
+
+
 
        //start sample stream
-        _twitterStream.sample();
+        twitterStream.sample();
     
     }
 
@@ -110,7 +108,7 @@ public class TwitterSpout extends BaseRichSpout {
 
     @Override
     public void close() {
-        _twitterStream.shutdown();
+        twitterStream.shutdown();
     }
 
     @Override

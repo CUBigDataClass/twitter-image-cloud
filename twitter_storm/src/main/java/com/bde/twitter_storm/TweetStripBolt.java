@@ -24,7 +24,7 @@ public class TweetStripBolt extends BaseRichBolt {
     @Override
     public void execute(Tuple input) {
         Status tweet = (Status) input.getValueByField("tweet");
-        boolean isEn = tweet.getLang() == "en";
+        boolean isEn = tweet.getLang().equals("en") ? true : false;
         boolean isRT = tweet.isRetweet();
         //filter out image only tweets?
         if(isEn && !isRT) {
