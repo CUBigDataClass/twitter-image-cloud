@@ -22,10 +22,8 @@ public class App {
         builder.setBolt("strip-filter-bolt", new TweetStripBolt()).shuffleGrouping("twitter-spout");
         //bolt to make NLP api call - this is the current rest point of data
         builder.setBolt("nlp-bolt", new NLPBolt()).shuffleGrouping("strip-filter-bolt");
-        //bolt to filter valid entities returned
-
         //bolt to make wiki api call
-
+        builder.setBolt("wiki-thumb-bold", new WikiThumbBolt()).shuffleGrouping("nlp-bolt");
         //bolt to story entity and tweet in SQL db
 
         LocalCluster cluster = new LocalCluster();
@@ -34,7 +32,7 @@ public class App {
         
         try {
             //how long to run topology - set to 30 secs
-            Thread.sleep(30000);
+            Thread.sleep(10000);
         } catch (Exception e) {
             System.out.println("ouch");
         }
