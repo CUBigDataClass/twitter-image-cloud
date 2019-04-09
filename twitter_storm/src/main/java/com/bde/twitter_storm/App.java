@@ -1,17 +1,31 @@
 package com.bde.twitter_storm;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.mysql.cj.jdbc.JdbcStatement;
+
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.topology.TopologyBuilder;
 
 public class App {
     public static void main(String[] args) {
+
         String consumerKey = args[0];
         String consumerSecret = args[1];
 
         String accessToken = args[2];
         String accessTokenSecret = args[3];
-    
+
+       SQLConnect.setup();
+
+        
+        
         Config config = new Config();
         config.setDebug(false);
 
@@ -23,8 +37,9 @@ public class App {
         //bolt to make NLP api call - this is the current rest point of data
         builder.setBolt("nlp-bolt", new NLPBolt()).shuffleGrouping("strip-filter-bolt");
         //bolt to make wiki api call
-        builder.setBolt("wiki-thumb-bold", new WikiThumbBolt()).shuffleGrouping("nlp-bolt");
+        builder.setBolt("wiki-thumb-bolt", new WikiThumbBolt()).shuffleGrouping("nlp-bolt");
         //bolt to story entity and tweet in SQL db
+        builder.setBolt("sql-bolt", new SQLBolt()).shuffleGrouping("wiki-thumb-bolt");
 
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("Twitter-to-SQL", config, builder.createTopology());
@@ -35,6 +50,12 @@ public class App {
             Thread.sleep(10000);
         } catch (Exception e) {
             System.out.println("ouch");
+        }
+        try {
+            SQLConnect.con.close();
+        } catch (SQLException e) {
+            System.out.println("con not closed");
+
         }
         cluster.shutdown();
     }
