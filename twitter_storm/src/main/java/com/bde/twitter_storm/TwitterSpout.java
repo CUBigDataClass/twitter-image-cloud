@@ -79,7 +79,7 @@ public class TwitterSpout extends BaseRichSpout {
 
         ConfigurationBuilder cb = new ConfigurationBuilder();
 
-        cb.setDebugEnabled(true)
+        cb.setDebugEnabled(false)
                 .setOAuthConsumerKey(consumerKey)
                 .setOAuthConsumerSecret(consumerSecret)
                 .setOAuthAccessToken(accessToken)

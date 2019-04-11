@@ -53,18 +53,18 @@ public class SQLBolt extends BaseRichBolt {
 
 
         //check if entity is 
-        String selectEntity = "SELECT * FROM ENTITIES WHERE ENTITY_NAME = " + entityName + ";";
+        String selectEntity = "select * from ENTITIES where ENTITY_NAME = '" + entityName + "'";
 
 
 
         //entity table
-        String sql = "INSERT INTO ENTITIES(ENTITY_ID, ENTITY_NAME, WIKI_URL) VALUES()";
+        
         
         //tweet table: 
         //String sql = "INSERT INTO TWEETS(UNIQUE_ID, TWITTER_ID, ENTITY_ID, CREATED_DATETIME) VALUES()";
         Connection con = SQLConnect.con;
-        try {
 
+        try {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(selectEntity);
             
@@ -75,12 +75,10 @@ public class SQLBolt extends BaseRichBolt {
                 }
             }
             else {
+                // Statement insert = con.createStatement()
+                String sqlInsert = "insert into ENTITIES(ENTITY_ID, ENTITY_NAME, WIKI_URL) VALUES()";
                 System.out.println("no results, need to insert new entity");
             }
-
-            
-
-            
             
         } catch (SQLException ex) {
 

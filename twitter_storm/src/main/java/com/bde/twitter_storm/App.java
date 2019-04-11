@@ -22,7 +22,7 @@ public class App {
         String accessToken = args[2];
         String accessTokenSecret = args[3];
 
-       SQLConnect.setup();
+        SQLConnect.setup();
 
         
         
@@ -51,12 +51,15 @@ public class App {
         } catch (Exception e) {
             System.out.println("ouch");
         }
+        //shutdown the topology
+        cluster.shutdown();
+
+        //close sql db connection
         try {
             SQLConnect.con.close();
         } catch (SQLException e) {
             System.out.println("con not closed");
 
         }
-        cluster.shutdown();
     }
 }
