@@ -7,10 +7,16 @@ import java.util.logging.Logger;
 
 import com.mysql.cj.jdbc.JdbcStatement;
 
-
 public class SQLConnect {
 
     public static Connection con;
+    public static PreparedStatement selectEntityStatement;
+    public static PreparedStatement insertEntityStatement;
+    public static PreparedStatement insertTweetStatement;
+
+    public static final String selectEntityString = "select * from ENTITIES where ENTITY_NAME = ?";
+    public static final String insertEntityString = "insert into ENTITIES(ENTITY_NAME, WIKI_URL, WIKI_IMAGE_URL) VALUES (?,?,?)";
+    public static final String insertTweetString = "insert into TWEETS(TWITTER_ID, ENTITY_ID, CREATED_DATETIME) VALUES (?,?,?)";
 
     public static void setup() {
 
@@ -23,34 +29,14 @@ public class SQLConnect {
         String url = "jdbc:mysql://google/DEV?cloudSqlInstance=big-data-energy:us-central1:big-data-energy-mysql&socketFactory=com.google.cloud.sql.mysql.SocketFactory&useSSL=false&user="
                 + user + "&password=" + password;
 
-        // String url =
-        // "jdbc:mysql://google/big-data-energy:us-central1:big-data-energy-mysql:3306/DEV?user="
-        // + user + "&password=" + password + "&useSSL=false";
 
         try {
-
             con = DriverManager.getConnection(url, user, password);
+            System.out.println("Connected to MySQL!");
 
-            System.out.println("Connected!");
-
-            //log the schema
-            ResultSet resultSet = con.getMetaData().getCatalogs();
-
-            String[] types = { "TABLE" };
-            resultSet = con.getMetaData().getTables("DEV", null, "%", types);
-            String tableName = "";
-            while (resultSet.next()) {
-                tableName = resultSet.getString(3);
-                System.out.println("Table Name = " + tableName);
-            }
-            resultSet.close();
-            // --- LISTING DATABASE COLUMN NAMES ---
-            DatabaseMetaData meta = con.getMetaData();
-            resultSet = meta.getColumns("DEV", null, "ENTITIES", "%");
-            while (resultSet.next()) {
-                System.out.println("Column Name of table " + "ENTITIES" + " = " + resultSet.getString(4));
-            }
-
+            selectEntityStatement = con.prepareStatement(selectEntityString);
+            insertEntityStatement = con.prepareStatement(insertEntityString, PreparedStatement.RETURN_GENERATED_KEYS);
+            insertTweetStatement = con.prepareStatement(insertTweetString);
 
         } catch (SQLException ex) {
 
