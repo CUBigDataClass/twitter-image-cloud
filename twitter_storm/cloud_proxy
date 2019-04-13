@@ -1,0 +1,2 @@
+#!/bin/bash
+./cloud_sql_proxy -instances=big-data-energy:us-central1:big-data-energy-mysql=tcp:3306

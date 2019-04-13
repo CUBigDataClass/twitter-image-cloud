@@ -38,10 +38,16 @@ public class WikiThumbBolt extends BaseRichBolt {
         String wikiURL = (String) input.getValueByField("wikiURL");
         String thumbLink = getThumbLink(wikiURL);
         if (thumbLink != null) {
-            List<Object> vals = input.getValues();
-            vals.add(thumbLink);
-            collector.emit(new Values(vals));
-            System.out.println("VALS: " + vals);
+            System.out.println("Entity: " + input.getValueByField("entityName"));
+            
+            collector.emit(new Values(
+                input.getValueByField("entityName"),
+                input.getValueByField("wikiURL"),
+                input.getValueByField("tweetID"),
+                input.getValueByField("tweetCreatedAt"),
+                thumbLink
+            ));
+            
         }
     }
 
