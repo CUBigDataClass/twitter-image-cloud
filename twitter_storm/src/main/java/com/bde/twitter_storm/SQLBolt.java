@@ -1,8 +1,5 @@
 package com.bde.twitter_storm;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -11,12 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.mysql.cj.jdbc.JdbcPreparedStatement;
-import com.mysql.cj.xdevapi.Result;
-import com.google.protobuf.TextFormat.ParseException;
-import com.mysql.*;
-import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;

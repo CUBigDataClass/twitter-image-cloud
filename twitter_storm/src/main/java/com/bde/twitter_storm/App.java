@@ -1,14 +1,5 @@
 package com.bde.twitter_storm;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.mysql.cj.jdbc.JdbcStatement;
-
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.topology.TopologyBuilder;
@@ -45,21 +36,21 @@ public class App {
         cluster.submitTopology("Twitter-to-SQL", config, builder.createTopology());
 
         
-        try {
-            //how long to run topology - set to 30 secs
-            Thread.sleep(10000);
-        } catch (Exception e) {
-            System.out.println("ouch");
-        }
-        //shutdown the topology
-        cluster.shutdown();
+        // try {
+        //     //how long to run topology - set to 30 secs
+        //     Thread.sleep(10000);
+        // } catch (Exception e) {
+        //     System.out.println("ouch");
+        // }
+        // //shutdown the topology
+        // cluster.shutdown();
 
         //close sql db connection
-        try {
-            SQLConnect.con.close();
-        } catch (SQLException e) {
-            System.out.println("con not closed");
+        // try {
+        //     SQLConnect.con.close();
+        // } catch (SQLException e) {
+        //     System.out.println("con not closed");
 
-        }
+        // }
     }
 }
