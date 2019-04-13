@@ -28,7 +28,7 @@ public class TweetStripBolt extends BaseRichBolt {
         boolean isRT = tweet.isRetweet();
         //filter out image only tweets?
         if(isEn && !isRT) {
-            collector.emit(new Values(tweet.getCreatedAt(), tweet.getId(), tweet.getText()));
+            collector.emit(new Values(tweet.getCreatedAt(), String.valueOf(tweet.getId()), tweet.getText()));
         }
 
     }

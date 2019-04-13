@@ -5,13 +5,18 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.mysql.cj.jdbc.JdbcPreparedStatement;
+import com.mysql.cj.xdevapi.Result;
+import com.google.protobuf.TextFormat.ParseException;
 import com.mysql.*;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -28,9 +33,13 @@ public class SQLBolt extends BaseRichBolt {
 
     @Override
     public void execute(Tuple input) {
-        String entityName = (String) input.getValueByField("entityName");
-        insertEntity(entityName);
-
+        String entityName = input.getStringByField("entityName");
+        String wikiUrl = input.getStringByField("wikiURL");
+        String imageUrl = input.getStringByField("wikiImageURL");
+        String twitterID = input.getStringByField("tweetID");
+        Date tweetDate = (Date) input.getValueByField("tweetCreatedAt");
+        int entityID = insertEntity(entityName, wikiUrl, imageUrl);
+        insertTweet(twitterID, entityID, tweetDate);
     }
 
     @Override
@@ -38,46 +47,45 @@ public class SQLBolt extends BaseRichBolt {
 
     }
 
-    public int insertEntity(String entityName) {
+    public void insertTweet(String twitterID, int entityID, Date date) {
+        try {
+            SQLConnect.insertTweetStatement.setString(1, twitterID);
+            SQLConnect.insertTweetStatement.setInt(2, entityID);
+            SQLConnect.insertTweetStatement.setTimestamp(3, new Timestamp(date.getTime()));
+            SQLConnect.insertTweetStatement.executeUpdate();
+            System.out.println("Great success inserting tweet!");
+        } catch(SQLException e) {
+            System.out.println("ERROR SQLing");
+        }
+    }
 
-        Map<String, String> env = System.getenv();
-        String user = env.get("BDE_SQL_USERNAME");
-        String password = env.get("BDE_SQL_PASSWORD");
-
-        String url = "jdbc:mysql://google/big-data-energy:us-central1:big-data-energy-mysql:3306/DEV?user="+ user + "&password=" + password + "&useSSL=false";
-
-        //String url = "jdbc:mysql://big-data-energy:us-central1:big-data-energy-mysql:3306/DEV?user="+ user + "&password=" + password + "&useSSL=false";
-        
-        
-        
-
-
-        //check if entity is 
-        String selectEntity = "select * from ENTITIES where ENTITY_NAME = '" + entityName + "'";
-
-
-
-        //entity table
-        
-        
-        //tweet table: 
-        //String sql = "INSERT INTO TWEETS(UNIQUE_ID, TWITTER_ID, ENTITY_ID, CREATED_DATETIME) VALUES()";
-        Connection con = SQLConnect.con;
+    public int insertEntity(String entityName, String wikiUrl, String imageUrl) {
 
         try {
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(selectEntity);
+            SQLConnect.selectEntityStatement.setString(1, entityName);
+            ResultSet rs = SQLConnect.selectEntityStatement.executeQuery();
             
             if(rs.next()) {
-                System.out.println(rs.getString("ENTITY_NAME"));
                 if(rs.next()) {
-                    System.out.println("****FUCK: TWO OR MORE ENTITY ROWS RETURNED ******");
+                    System.out.println("****ERROR: TWO OR MORE ENTITY ROWS RETURNED ******");
                 }
+                return rs.getInt("ENTITY_ID");
             }
             else {
-                // Statement insert = con.createStatement()
-                String sqlInsert = "insert into ENTITIES(ENTITY_ID, ENTITY_NAME, WIKI_URL) VALUES()";
-                System.out.println("no results, need to insert new entity");
+                System.out.println("no results for: " + entityName + ". Inserting new entity");
+                SQLConnect.insertEntityStatement.setString(1, entityName);
+                SQLConnect.insertEntityStatement.setString(2, wikiUrl);
+                SQLConnect.insertEntityStatement.setString(3, imageUrl);
+                SQLConnect.insertEntityStatement.executeUpdate();
+                ResultSet insertResult = SQLConnect.insertEntityStatement.getGeneratedKeys();
+                long key = -1L;
+                if (insertResult.next()) {
+                   key = insertResult.getLong(1);
+                } else {
+                    System.out.println("ERROR: no key returned from insert entity");
+                }
+                System.out.println("Insert Key: " + key);
+                return (int) key;
             }
             
         } catch (SQLException ex) {
