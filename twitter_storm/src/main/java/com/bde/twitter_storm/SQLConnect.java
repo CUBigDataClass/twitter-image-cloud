@@ -9,16 +9,16 @@ import com.mysql.cj.jdbc.JdbcStatement;
 
 public class SQLConnect {
 
-    public static Connection con;
-    public static PreparedStatement selectEntityStatement;
-    public static PreparedStatement insertEntityStatement;
-    public static PreparedStatement insertTweetStatement;
+    public Connection con;
+    public PreparedStatement selectEntityStatement;
+    public PreparedStatement insertEntityStatement;
+    public PreparedStatement insertTweetStatement;
 
-    public static final String selectEntityString = "select * from ENTITIES where ENTITY_NAME = ?";
-    public static final String insertEntityString = "insert into ENTITIES(ENTITY_NAME, WIKI_URL, WIKI_IMAGE_URL) VALUES (?,?,?)";
-    public static final String insertTweetString = "insert into TWEETS(TWITTER_ID, ENTITY_ID, CREATED_DATETIME) VALUES (?,?,?)";
+    public final String selectEntityString = "select * from ENTITIES where WIKI_URL = ?";
+    public final String insertEntityString = "insert into ENTITIES(ENTITY_NAME, WIKI_URL, WIKI_IMAGE_URL) VALUES (?,?,?)";
+    public final String insertTweetString = "insert into TWEETS(TWITTER_ID, ENTITY_ID, CREATED_DATETIME) VALUES (?,?,?)";
 
-    public static void setup() {
+    public SQLConnect() {
 
         Map<String, String> env = System.getenv();
         String user = env.get("BDE_SQL_USERNAME");

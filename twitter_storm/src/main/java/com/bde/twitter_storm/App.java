@@ -17,8 +17,6 @@ public class App {
         String accessToken = args[2];
         String accessTokenSecret = args[3];
 
-        SQLConnect.setup();
-
         Config config = new Config();
         config.setDebug(false);
 
@@ -35,17 +33,17 @@ public class App {
         // bolt to story entity and tweet in SQL db
         builder.setBolt("sql-bolt", new SQLBolt()).shuffleGrouping("wiki-thumb-bolt");
 
-        // For local cluster
-        // LocalCluster cluster = new LocalCluster();
-        // cluster.submitTopology("Twitter-to-SQL", config, builder.createTopology());
+        // //For local cluster
+        LocalCluster cluster = new LocalCluster();
+        cluster.submitTopology("Twitter-to-SQL", config, builder.createTopology());
 
-        config.setNumWorkers(4);
-        config.setMaxSpoutPending(5000);
-        try {
-            StormSubmitter.submitTopology("Awesome_Topology", config, builder.createTopology());
-        } catch (AlreadyAliveException | InvalidTopologyException | AuthorizationException e) {
-            e.printStackTrace();
-        }
+        // config.setNumWorkers(4);
+        // config.setMaxSpoutPending(5000);
+        // try {
+        //     StormSubmitter.submitTopology("Awesome_Topology", config, builder.createTopology());
+        // } catch (AlreadyAliveException | InvalidTopologyException | AuthorizationException e) {
+        //     e.printStackTrace();
+        // }
 
         
         // try {

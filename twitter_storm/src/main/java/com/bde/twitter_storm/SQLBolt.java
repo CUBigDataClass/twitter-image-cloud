@@ -1,5 +1,6 @@
 package com.bde.twitter_storm;
 
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -18,9 +19,12 @@ import org.apache.storm.tuple.Tuple;
 
 public class SQLBolt extends BaseRichBolt {
 
+    SQLConnect sql;
+
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
-
+        // test instantiate SQL connect
+        sql = new SQLConnect();
     }
 
     @Override
@@ -41,10 +45,10 @@ public class SQLBolt extends BaseRichBolt {
 
     public void insertTweet(String twitterID, int entityID, Date date) {
         try {
-            SQLConnect.insertTweetStatement.setString(1, twitterID);
-            SQLConnect.insertTweetStatement.setInt(2, entityID);
-            SQLConnect.insertTweetStatement.setTimestamp(3, new Timestamp(date.getTime()));
-            SQLConnect.insertTweetStatement.executeUpdate();
+            sql.insertTweetStatement.setString(1, twitterID);
+            sql.insertTweetStatement.setInt(2, entityID);
+            sql.insertTweetStatement.setTimestamp(3, new Timestamp(date.getTime()));
+            sql.insertTweetStatement.executeUpdate();
             System.out.println("Great success inserting tweet!");
         } catch(SQLException e) {
             System.out.println("ERROR SQLing");
@@ -54,22 +58,22 @@ public class SQLBolt extends BaseRichBolt {
     public int insertEntity(String entityName, String wikiUrl, String imageUrl) {
 
         try {
-            SQLConnect.selectEntityStatement.setString(1, entityName);
-            ResultSet rs = SQLConnect.selectEntityStatement.executeQuery();
+            sql.selectEntityStatement.setString(1, wikiUrl);
+            ResultSet rs = sql.selectEntityStatement.executeQuery();
             
             if(rs.next()) {
-                if(rs.next()) {
+                if(!rs.isLast()) {
                     System.out.println("****ERROR: TWO OR MORE ENTITY ROWS RETURNED ******");
                 }
                 return rs.getInt("ENTITY_ID");
             }
             else {
                 System.out.println("no results for: " + entityName + ". Inserting new entity");
-                SQLConnect.insertEntityStatement.setString(1, entityName);
-                SQLConnect.insertEntityStatement.setString(2, wikiUrl);
-                SQLConnect.insertEntityStatement.setString(3, imageUrl);
-                SQLConnect.insertEntityStatement.executeUpdate();
-                ResultSet insertResult = SQLConnect.insertEntityStatement.getGeneratedKeys();
+                sql.insertEntityStatement.setString(1, entityName);
+                sql.insertEntityStatement.setString(2, wikiUrl);
+                sql.insertEntityStatement.setString(3, imageUrl);
+                sql.insertEntityStatement.executeUpdate();
+                ResultSet insertResult = sql.insertEntityStatement.getGeneratedKeys();
                 long key = -1L;
                 if (insertResult.next()) {
                    key = insertResult.getLong(1);
