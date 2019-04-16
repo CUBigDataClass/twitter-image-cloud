@@ -14,7 +14,9 @@ function wCloud() {
             "type": "wordcloud",  
             "options": {
             "style": {
-                "tooltip": {
+                "tooltip": { 
+//                    background:url("https://via.placeholder.com/150"),
+                content:'<img src="../img/color.jpg" alt="">',
                 visible: true,
                 text: '%text: %hits'
                 },
@@ -34,7 +36,8 @@ function wCloud() {
 }
 /* AJAX request function */
 function request(value) {
-    ourRequest.open('GET','js/test-' + value + '.json');
+//    ourRequest.open('GET','js/test-' + value + '.json');
+    ourRequest.open('GET','https://twitter-image-cloud-api.herokuapp.com/12/12/12');
     ourRequest.onload = function() {
         if (ourRequest.status >= 200 && ourRequest.status < 400){
             words = JSON.parse(ourRequest.responseText);
@@ -68,5 +71,3 @@ slider.oninput = function () {
 //    console.log('js/test-' + this.value + '.json');
 //    console.log(words);
 };
-
-
