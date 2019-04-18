@@ -1,0 +1,27 @@
+version: '3.2'
+
+services:
+    zookeeper:
+        build: ./zookeeper
+        image: zookeeper:latest
+        # Keep it running.  
+        tty: true
+        
+    nimbus:
+        build: ./storm-nimbus
+        image: nimbus:latest
+        links:
+            - zookeeper
+        tty: true
+        # To access the Storm UI from our host machine.  
+        ports:
+            - 8080:8080
+
+    supervisor:
+        build: ./storm-supervisor
+        image: supervisor:latest
+        links:
+            - zookeeper
+            - storm-nimbus
+        tty: true
+
