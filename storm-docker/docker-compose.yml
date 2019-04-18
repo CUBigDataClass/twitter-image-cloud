@@ -9,7 +9,7 @@ services:
         
     nimbus:
         build: ./storm-nimbus
-        image: nimbus:latest
+        image: gcr.io/big-data-energy/nimbus:latest
         links:
             - zookeeper
         tty: true
@@ -19,7 +19,7 @@ services:
 
     supervisor:
         build: ./storm-supervisor
-        image: supervisor:latest
+        image: gcr.io/big-data-energy/supervisor:latest
         links:
             - zookeeper
             - storm-nimbus
