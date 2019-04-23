@@ -1,27 +1,59 @@
-version: '3.2'
+version: '3.1'
 
 services:
-    zookeeper:
-        build: ./zookeeper
-        image: zookeeper:latest
-        # Keep it running.  
-        tty: true
-        
-    nimbus:
-        build: ./storm-nimbus
-        image: gcr.io/big-data-energy/nimbus:latest
-        links:
-            - zookeeper
-        tty: true
-        # To access the Storm UI from our host machine.  
-        ports:
-            - 8080:8080
+  zookeeper:
+    build: ./zookeeper
+    container_name: zookeeper
+    restart: always
 
-    supervisor:
-        build: ./storm-supervisor
-        image: gcr.io/big-data-energy/supervisor:latest
-        links:
-            - zookeeper
-            - storm-nimbus
-        tty: true
+  nimbus:
+    build: ./storm-nimbus
+    container_name: nimbus
+    command: storm nimbus
+    depends_on:
+      - zookeeper
+    links:
+      - zookeeper
+    restart: always
+    ports:
+      - 6627:6627
+
+  supervisor:
+    build: ./storm-supervisor
+    container_name: supervisor
+    command: storm supervisor
+    depends_on:
+      - nimbus
+      - zookeeper
+    links:
+      - nimbus
+      - zookeeper
+    restart: always
+
+# version: '3.2'
+
+# services:
+#     zookeeper:
+#         build: ./zookeeper
+#         image: zookeeper:latest
+#         # Keep it running.  
+#         tty: true
+        
+#     nimbus:
+#         build: ./storm-nimbus
+#         image: gcr.io/big-data-energy/nimbus:latest
+#         links:
+#             - zookeeper
+#         tty: true
+#         # To access the Storm UI from our host machine.  
+#         ports:
+#             - 8080:8080
+
+#     supervisor:
+#         build: ./storm-supervisor
+#         image: gcr.io/big-data-energy/supervisor:latest
+#         links:
+#             - zookeeper
+#             - nimbus
+#         tty: true
 

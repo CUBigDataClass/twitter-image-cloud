@@ -18,9 +18,8 @@ spec:
         io.kompose.service: zookeeper
     spec:
       containers:
-      - image: zookeeper:latest
+      - image: zookeeper
         name: zookeeper
         resources: {}
-        tty: true
       restartPolicy: Always
 status: {}

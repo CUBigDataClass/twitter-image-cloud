@@ -18,9 +18,11 @@ spec:
         io.kompose.service: supervisor
     spec:
       containers:
-      - image: gcr.io/big-data-energy/supervisor:latest
+      - args:
+        - storm
+        - supervisor
+        image: gcr.io/big-data-energy/supervisor
         name: supervisor
         resources: {}
-        tty: true
       restartPolicy: Always
 status: {}

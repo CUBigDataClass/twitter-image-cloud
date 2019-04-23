@@ -18,11 +18,13 @@ spec:
         io.kompose.service: nimbus
     spec:
       containers:
-      - image: gcr.io/big-data-energy/nimbus:latest
+      - args:
+        - storm
+        - nimbus
+        image: gcr.io/big-data-energy/nimbus
         name: nimbus
         ports:
-        - containerPort: 8080
+        - containerPort: 6627
         resources: {}
-        tty: true
       restartPolicy: Always
 status: {}

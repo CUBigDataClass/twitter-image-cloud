@@ -9,11 +9,10 @@ metadata:
     io.kompose.service: nimbus
   name: nimbus
 spec:
-  type: LoadBalancer
   ports:
-  - name: "8080"
-    port: 8080
-    targetPort: 8080
+  - name: "6627"
+    port: 6627
+    targetPort: 6627
   selector:
     io.kompose.service: nimbus
 status:
